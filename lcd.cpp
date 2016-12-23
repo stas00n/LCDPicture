@@ -52,6 +52,16 @@ void CLCD::MemRect(CRect* rect, uint16_t* mem)
   }
 }
 
+void CLCD::DrawBitmap(CRect* rect, uint16_t* bm)
+{
+  uint32_t nPixels = rect->width * rect->hidth;
+  SetColumnAddress(rect->left, rect->left + rect->width - 1);
+  SetPageAddress(rect->top, rect->top + rect->hidth - 1);
+  WriteCom(0x2C);
+
+  WritePixelsBitmap(bm, nPixels, GPIOC_BASE);
+}
+
 void CLCD::WriteCom(uint8_t com)
 {
   GPIO_ResetPin(PIN_LCD_CS);

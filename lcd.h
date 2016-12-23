@@ -31,20 +31,17 @@ public:
   void WriteMemoryStart();
   void FillRect(CRect* rect, uint16_t pColor);
   void MemRect(CRect* rect, uint16_t* mem);
-  
+  void DrawBitmap(CRect* rect, uint16_t* bm);
+
 };
-
-
-
-
 
 /*---------------------"C" Linkage funcs:------------------------------------*/
 #ifdef __cplusplus
 extern "C" {
 #endif
   
-void WritePixels(uint16_t pixel, uint32_t numPixels, uint32_t GPIOx_BASE);
-  
+void WritePixels(uint16_t pixel, uint32_t nPixels, uint32_t GPIOx_BASE);
+void WritePixelsBitmap(uint16_t* bm, uint32_t nPixels, uint32_t GPIOx_BASE);
 #ifdef __cplusplus
 }
 #endif

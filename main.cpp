@@ -48,7 +48,8 @@ void main()
     rect.left = 128;
     rect.width = 64;
     rect.hidth = 64;
-    lcd.MemRect(&rect, (uint16_t*)tile2);
+    //lcd.MemRect(&rect, (uint16_t*)tile2);
+    lcd.DrawBitmap(&rect, (uint16_t*)tile2);
     // indx++;
     // indx &= 3;
   }

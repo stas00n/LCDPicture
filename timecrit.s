@@ -25,4 +25,26 @@ _lp1
   
   pop {r4-r6}
   bx      lr
+  
+  
+  PUBLIC WritePixelsBitmap
+WritePixelsBitmap       ;(uint16_t* bm, uint32_t nPixels, uint32_t GPIOx_BASE);
+  
+  push          {r4}
+  movs          r3, #1                  ;load BSRR value
+  lsls          r3, r3, #8
+  
+_lp2
+  ldrb          r4,[r0, #1]
+  strh          r4, [r2, #0x14]         ;write odr
+  strh          r3,[r2, #0x18]
+  ldrb          r4, [r0]
+  strh          r4, [r2, #0x14]
+  strh          r3, [r2, #0x18]
+  adds          r0, r0, #2
+  subs          r1, r1, #1
+  bne           _lp2
+  
+  pop           {r4}  
+  bx lr
   end
