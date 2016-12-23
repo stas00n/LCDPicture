@@ -30,10 +30,8 @@ void CLCD::FillRect(CRect* rect, uint16_t color)
   
   uint16_t pixel = color;
   
-//  for(uint32_t i = 0; i < nPixels; i++)
-//  {
-    WritePixels(pixel, nPixels, GPIOC_BASE);
-//  }
+  WritePixels(pixel, nPixels, GPIOC_BASE);
+
 }
 
 void CLCD::MemRect(CRect* rect, uint16_t* mem)
@@ -48,9 +46,9 @@ void CLCD::MemRect(CRect* rect, uint16_t* mem)
   for(uint32_t i = 0; i < nPixels; i++)
   {
     pix = *mem++;
-    
-    WriteData((uint8_t)(pix >> 8));
-    WriteData((uint8_t)pix);
+    WritePixels(pix, 1, GPIOC_BASE);
+//    WriteData((uint8_t)(pix >> 8));
+//    WriteData((uint8_t)pix);
   }
 }
 
