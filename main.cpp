@@ -42,10 +42,15 @@ void main()
   // Fill screen then cycle fill color
   while(1)
   {
-  // Set Breakpoint here...
-    lcd.FillRect(&rect, colors[indx]);
-    indx++;
-    indx &= 3;
+    // Set Breakpoint here...
+    // lcd.FillRect(&rect, colors[indx]);
+    rect.top = 209;
+    rect.left = 128;
+    rect.width = 64;
+    rect.hidth = 64;
+    lcd.MemRect(&rect, (uint16_t*)tile2);
+    // indx++;
+    // indx &= 3;
   }
 }
 
