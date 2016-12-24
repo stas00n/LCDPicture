@@ -44,8 +44,8 @@ void main()
     rect.hidth = 482;
     lcd.FillRect(&rect, 0);
     
-    myf.Draw_MYF_Start((uint8_t*)x4548y2605, 24, 0);
-    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 24, 256);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2605, 30, 0);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 30, 256);
   }
 }
 
