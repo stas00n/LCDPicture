@@ -2251,6 +2251,9 @@
     <name>$PROJ_DIR$\main.h</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\myf.cpp</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\periph.c</name>
   </file>
   <file>
@@ -2264,6 +2267,9 @@
   </file>
   <file>
     <name>$PROJ_DIR$\Pictures\x4548y2605.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\Pictures\x4548y2606.c</name>
   </file>
 </project>
 

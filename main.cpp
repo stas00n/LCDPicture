@@ -1,8 +1,10 @@
 #include "main.h"
 
 extern const unsigned char x4548y2605[];
+extern const unsigned char x4548y2606[];
 
 CLCD lcd;
+CMYF myf;
 
 void main()
 {
@@ -29,29 +31,21 @@ void main()
   lcd.WriteCom(0x29);   //set display on
   
   CRect rect;
-  uint16_t colors[4] = {0xF800, 0x07E0, 0x001F, 0x0000}; // R, G, B, BK
-  uint8_t indx = 0;     // Color indx
-  
-  // Clear screen (Fill Black)
-  rect.top = 0;
-  rect.left = 24;
-  rect.width = 272;
-  rect.hidth = 482;
-  lcd.FillRect(&rect, 0);
+
+
   
   // Fill screen then cycle fill color
   while(1)
   {
-    // Set Breakpoint here...
-    // lcd.FillRect(&rect, colors[indx]);
-    rect.top = 209;
-    rect.left = 128;
-    rect.width = 64;
-    rect.hidth = 64;
-    //lcd.MemRect(&rect, (uint16_t*)tile2);
-    lcd.DrawBitmap(&rect, (uint16_t*)x4548y2605);
-    // indx++;
-    // indx &= 3;
+    // Clear screen (Fill Black)
+    rect.top = 0;
+    rect.left = 24;
+    rect.width = 272;
+    rect.hidth = 482;
+    lcd.FillRect(&rect, 0);
+    
+    myf.Draw_MYF_Start((uint8_t*)x4548y2605, 24, 0);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 24, 256);
   }
 }
 
