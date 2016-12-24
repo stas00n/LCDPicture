@@ -42,6 +42,7 @@ extern "C" {
   
 void WritePixels(uint16_t pixel, uint32_t nPixels, uint32_t GPIOx_BASE);
 void WritePixelsBitmap(uint16_t* bm, uint32_t nPixels, uint32_t GPIOx_BASE);
+void WritePixelsBitmap2(uint16_t* bm, uint32_t nPixels, uint32_t GPIOx_BASE);
 #ifdef __cplusplus
 }
 #endif

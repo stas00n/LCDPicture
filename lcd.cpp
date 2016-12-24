@@ -59,7 +59,7 @@ void CLCD::DrawBitmap(CRect* rect, uint16_t* bm)
   SetPageAddress(rect->top, rect->top + rect->hidth - 1);
   WriteCom(0x2C);
 
-  WritePixelsBitmap(bm, nPixels, GPIOC_BASE);
+  WritePixelsBitmap2(bm, nPixels, GPIOC_BASE);
 }
 
 void CLCD::WriteCom(uint8_t com)

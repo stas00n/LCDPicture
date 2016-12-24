@@ -1,6 +1,6 @@
 #include "main.h"
-#include "picture.h"
 
+extern const unsigned char x4548y2605[];
 
 CLCD lcd;
 
@@ -49,7 +49,7 @@ void main()
     rect.width = 64;
     rect.hidth = 64;
     //lcd.MemRect(&rect, (uint16_t*)tile2);
-    lcd.DrawBitmap(&rect, (uint16_t*)tile2);
+    lcd.DrawBitmap(&rect, (uint16_t*)x4548y2605);
     // indx++;
     // indx &= 3;
   }

@@ -2257,13 +2257,13 @@
     <name>$PROJ_DIR$\periph.h</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\pict.h</name>
-  </file>
-  <file>
     <name>$PROJ_DIR$\stm32f0xx_conf.h</name>
   </file>
   <file>
     <name>$PROJ_DIR$\timecrit.s</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\Pictures\x4548y2605.c</name>
   </file>
 </project>
 
