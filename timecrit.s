@@ -91,40 +91,39 @@ _lp3
 
 ;-------------------------------------------------------------------------------
 
-  PUBLIC DrawPixelSequenceFull
+  PUBLIC DrawPixelSequenceFull_Fast
 ;(uint8_t* seq, uint32_t seqSize, uint16_t* clut, uint32_t GPIOx_BASE)
-DrawPixelSequenceFull
-  push {r4-r7}
+DrawPixelSequenceFull_Fast
+  push          {r4-r7}
 ;loop counter r8,r9
   subs          r1, #1
   mov           r8, r1
   movs          r1, #0
   mvns          r1, r1
   mov           r9, r1
-;254 in r10
-  movs          r1, #254
-  mov           r10, r1
+
 ;write pulse BSRR in r7  
-  movs r7, #1
-  lsls r7, r7, #8       ;write pulse BSRR
+  movs          r7, #1
+  lsls          r7, r7, #8
   
   
 _lp_main  
-  ldrb          r1, [r0] ;read byte in r1
-  mov           r11, r1  ;temp store in r11
+  ldrb          r1, [r0]        ;read byte in r1
     
-  cmp           r1, r10  
+  cmp           r1, #254  
   BGE           _repeat
   
-  lsls          r1, r1, #1;clut word offset in r1
-  ldrh          r4, [r2, r1]; color word in r4
+  lsls          r1, r1, #1      ;clut word offset in r1
+
+  ldrh          r4, [r2, r1]    ; color word in r4
   
-  lsrs          r5, r4, #8;high byte in r5
+  lsrs          r5, r4, #8      ; High byte in r5
+  movs          r1, #0xFF
+  ands          r4, r1, r4      ; Low byte in r4
+  
   strh          r5, [r3, #0x14]
   strh          r7, [r3, #0x18]
   
-  movs          r1, #0xFF
-  ands          r4, r1, r4      ; low byte in r4
   strh          r4, [r3, #0x14]
   strh          r7, [r3, #0x18]
  
@@ -133,19 +132,22 @@ _lp_main
   cmp           r8, r9
   bne           _lp_main
   b             _exit
+  
 _repeat
-  adds          r0, #1
-  add           r8, r9
-  ldrb          r6, [r0]
-  cmp           r1, r10
-  bgt           _rep1
-  adds          r0, #1
-  add           r8, r9
+  adds          r0, r0, #1      ; next byte
+  add           r8, r9          ; loop cnt--
+  
+  ldrb          r6, [r0]        ; Repeat count Low Byte in r6
+  cmp           r1, #254        ; if 1-byte value
+  bgt           _rep1           ; begin repeat
+                                ; else load High Byte:
+  adds          r0, #1          ; next byte
+  add           r8, r9          ; loop cnt--
   ldrb          r1, [r0]
   lsls          r1, r1, #8
   orrs          r6, r6, r1
+  
 _rep1
-
   strh          r5, [r3, #0x14]
   strh          r7, [r3, #0x18]
   
@@ -153,11 +155,12 @@ _rep1
   strh          r7, [r3, #0x18]
   
   subs          r6, #1
-  bne           _rep1
+  bne           _rep1           ; while(--repeatCnt > 0)
   
 
   adds          r0, r0, #1      ; next byte
   add           r8, r9          ; loop cnt--
+  
   cmp           r8, r9
   bne           _lp_main
 _exit

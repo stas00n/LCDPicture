@@ -2077,6 +2077,9 @@
     <name>$PROJ_DIR$\myf.cpp</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\myf.h</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\periph.c</name>
   </file>
   <file>
