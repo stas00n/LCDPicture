@@ -1,11 +1,14 @@
 
  section .text:CODE
   PUBLIC WritePixels
+  ;(uint16_t pixel, uint32_t nPixels, uint32_t GPIOx_BASE);
 WritePixels
 ;r0 = pixel;
 ;r1 = nPixels;
 ;r2 = GPIOx Base
 ;r5 - value to write bsrr
+  cmp           r1, #0
+  beq           _exit1
   push {r4-r6}
   movs  r4, #255 ;LSB in r4
   ands  r4, r4, r0
@@ -24,6 +27,7 @@ _lp1
   bne           _lp1  
   
   pop {r4-r6}
+_exit1
   bx      lr
 ;-------------------------------------------------------------------------------  
   

@@ -2,6 +2,7 @@
 
 extern const unsigned char x4548y2605[];
 extern const unsigned char x4548y2606[];
+extern const unsigned char y20825[];
 
 CLCD lcd;
 CMYF myf;
@@ -44,8 +45,12 @@ void main()
     rect.hidth = 482;
     lcd.FillRect(&rect, 0);
     
-    myf.Draw_MYF_Start((uint8_t*)x4548y2605, 30, 0);
-    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 30, 256);
+    rect.left = 30;
+    rect.top = 50;
+    rect.width = 256;
+    rect.hidth = 256;
+    myf.DrawPart(rect, (uint8_t*)x4548y2605, 0, 0);
+
   }
 }
 
