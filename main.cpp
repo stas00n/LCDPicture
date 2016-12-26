@@ -31,27 +31,14 @@ void main()
   lcd.WriteData(0x05);
   lcd.WriteCom(0x29);   //set display on
   
-  CRect rect;
-
-
   
-  // Fill screen then cycle fill color
   while(1)
   {
-    // Clear screen (Fill Black)
-    rect.top = 0;
-    rect.left = 24;
-    rect.width = 272;
-    rect.hidth = 482;
-    lcd.FillRect(&rect, 0xFFFF);
+    lcd.Clear();
     
-    rect.left = 55;
-    rect.width = 100;
-    rect.hidth =479;
-    lcd.FillRect(&rect, 0x7009);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2605,8 ,-16);
     
-   // myf.Draw_MYF_Start((uint8_t*)x4548y2605, 5,50);
-    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 5,224);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 8, 240);
   }
 }
 

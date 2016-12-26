@@ -23,9 +23,9 @@ void CLCD::SetPageAddress(uint16_t startPg, uint16_t endPg)
 
 void CLCD::FillRect(CRect* rect, uint16_t color)
 {
-  uint32_t nPixels = rect->width * rect->hidth;
+  uint32_t nPixels = rect->width * rect->height;
   SetColumnAddress(rect->left, rect->left + rect->width - 1);
-  SetPageAddress(rect->top, rect->top + rect->hidth - 1);
+  SetPageAddress(rect->top, rect->top + rect->height - 1);
   WriteCom(0x2C);
   
   uint16_t pixel = color;
@@ -37,9 +37,9 @@ void CLCD::FillRect(CRect* rect, uint16_t color)
 void CLCD::MemRect(CRect* rect, uint16_t* mem)
 {
   uint16_t pix;
-  uint32_t nPixels = rect->width * rect->hidth;
+  uint32_t nPixels = rect->width * rect->height;
   SetColumnAddress(rect->left, rect->left + rect->width - 1);
-  SetPageAddress(rect->top, rect->top + rect->hidth - 1);
+  SetPageAddress(rect->top, rect->top + rect->height - 1);
   WriteCom(0x2C);
   
     
@@ -47,16 +47,14 @@ void CLCD::MemRect(CRect* rect, uint16_t* mem)
   {
     pix = *mem++;
     WritePixels(pix, 1, GPIOC_BASE);
-//    WriteData((uint8_t)(pix >> 8));
-//    WriteData((uint8_t)pix);
   }
 }
 
 void CLCD::DrawBitmap(CRect* rect, uint16_t* bm)
 {
-  uint32_t nPixels = rect->width * rect->hidth;
+  uint32_t nPixels = rect->width * rect->height;
   SetColumnAddress(rect->left, rect->left + rect->width - 1);
-  SetPageAddress(rect->top, rect->top + rect->hidth - 1);
+  SetPageAddress(rect->top, rect->top + rect->height - 1);
   WriteCom(0x2C);
 
   WritePixelsBitmap2(bm, nPixels, GPIOC_BASE);
@@ -79,4 +77,14 @@ void CLCD::WriteData (uint8_t data)
   GPIO_ResetPin(PIN_LCD_WR);
   GPIOC->ODR = data;
   GPIO_SetPin(PIN_LCD_WR);
+}
+
+void CLCD::Clear(uint16_t color)
+{
+  CRect rect;
+  rect.left = DISP_COL_MIN;
+  rect.width = DISP_WIDTH;
+  rect.top = DISP_PAGE_MIN;
+  rect.height = DISP_HEIGHT;
+  FillRect(&rect, color);
 }

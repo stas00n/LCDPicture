@@ -9,7 +9,7 @@
 
 //  screen area desription
 #define DISP_WIDTH      272
-#define DISP_HEIGHT     482
+#define DISP_HEIGHT     480
 #define DISP_COL_OFFSET 24
 #define DISP_PAGE_OFFSET 0
 
@@ -24,7 +24,7 @@ public:
   uint16_t top;
   uint16_t left;
   uint16_t width;
-  uint16_t hidth;
+  uint16_t height;
 };
 
 class CLCD
@@ -39,6 +39,7 @@ public:
   
   void SetColumnAddress(uint16_t startCol, uint16_t endCol);
   void SetPageAddress(uint16_t startPg, uint16_t endPg);
+  void Clear(uint16_t color = 0);
   
   void WriteMemoryStart();
   void FillRect(CRect* rect, uint16_t pColor);
