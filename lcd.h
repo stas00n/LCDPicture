@@ -6,6 +6,18 @@
 #include "hardware.h"
 #include "gpioex.h"
 
+
+//  screen area desription
+#define DISP_WIDTH      272
+#define DISP_HEIGHT     482
+#define DISP_COL_OFFSET 24
+#define DISP_PAGE_OFFSET 0
+
+#define DISP_COL_MIN    DISP_COL_OFFSET
+#define DISP_COL_MAX    (DISP_COL_OFFSET + DISP_WIDTH - 1)
+#define DISP_PAGE_MIN   DISP_PAGE_OFFSET
+#define DISP_PAGE_MAX   (DISP_PAGE_OFFSET + DISP_HEIGHT - 1)
+
 class CRect
 {
 public:

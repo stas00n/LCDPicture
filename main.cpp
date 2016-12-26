@@ -43,14 +43,15 @@ void main()
     rect.left = 24;
     rect.width = 272;
     rect.hidth = 482;
-    lcd.FillRect(&rect, 0);
+    lcd.FillRect(&rect, 0xFFFF);
     
-    rect.left = 30;
-    rect.top = 50;
-    rect.width = 256;
-    rect.hidth = 256;
-    myf.DrawPart(rect, (uint8_t*)x4548y2605, 0, 0);
-
+    rect.left = 55;
+    rect.width = 100;
+    rect.hidth =479;
+    lcd.FillRect(&rect, 0x7009);
+    
+   // myf.Draw_MYF_Start((uint8_t*)x4548y2605, 5,50);
+    myf.Draw_MYF_Start((uint8_t*)x4548y2606, 5,224);
   }
 }
 
