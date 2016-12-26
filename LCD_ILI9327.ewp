@@ -1972,6 +1972,21 @@
     </file>
   </group>
   <group>
+    <name>Pictures</name>
+    <file>
+      <name>$PROJ_DIR$\Pictures\test1.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Pictures\x4548y2605.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Pictures\x4548y2606.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Pictures\y20825.c</name>
+    </file>
+  </group>
+  <group>
     <name>SPL</name>
     <file>
       <name>$PROJ_DIR$\SPL\stm32f0xx_crc.c</name>
@@ -2090,15 +2105,6 @@
   </file>
   <file>
     <name>$PROJ_DIR$\timecrit.s</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\Pictures\x4548y2605.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\Pictures\x4548y2606.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\Pictures\y20825.c</name>
   </file>
 </project>
 

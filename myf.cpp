@@ -141,56 +141,100 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
     
   
   uint32_t first = db->firstPixIndx;
-  uint32_t last = db->lastPixIndx;
+  uint32_t lastlast = db->lastPixIndx;
+  uint32_t next = first;
+  uint32_t last = first + db->nDraw;
   uint32_t npix = 0;
+  int32_t remrep = 0;
+  int32_t drawLim = -(db->nDraw * (db->ep - db->sp + 1));// Temp hang protection
   
   lcd.WriteCom(0x2C);
   
   uint8_t colIndx, tmp;
   uint16_t rep;
-  bool foundfirst = false;
+  bool foundnext = false;
   
-  while(seqSize--)
+  while(npix < lastlast)
   {
-    tmp = *seq++;
-    if(tmp < 0xFE)
+    if(remrep > 0)
     {
-      colIndx = tmp;
-      if(npix++ < first)
-        continue;
-      foundfirst = true;
-      if(npix > last)
-         break;
-      WritePixels(clut[tmp], 1, GPIOC_BASE);
-    }
-    else
-    {
-      rep = *(seq++);
-      seqSize--;
-      if(tmp == 0xFE)
-      {
-        rep |= (*(seq++) << 8);
-        seqSize--;
-      }
-      npix += rep;
-      if(npix < first)
-        continue;
-      if(!foundfirst)
-      {
-        rep = npix - first;
-        WritePixels(clut[colIndx], rep, GPIOC_BASE);
-        foundfirst = true;
-        npix = first;
-        continue;
-      }
+      npix += remrep;
       if(npix > last)
       {
-        npix -= rep;
+        npix -= remrep;
         rep = last - npix;
-        WritePixels(clut[colIndx], rep, GPIOC_BASE);
-        break;
+        npix += rep;
       }
+      else rep = remrep;
       WritePixels(clut[colIndx], rep, GPIOC_BASE);
+      
+      remrep -= rep;
+      remrep -= db->nSkip;
+      if(npix >= last)
+      {
+        next += db->nDraw + db->nSkip;
+        last = next + db->nDraw;
+        foundnext = false;
+        continue;
+      }
     }
-  }
+    while(seqSize--)
+    {
+      tmp = *seq++;
+      if(tmp < 0xFE)
+      {
+        colIndx = tmp;
+        if(npix++ < next)
+          continue;
+        foundnext = true;
+        if(npix > last)
+          break;
+        drawLim += 1;
+        WritePixels(clut[tmp], 1, GPIOC_BASE);
+      }
+      else
+      {
+        rep = *(seq++);
+        seqSize--;
+        if(tmp == 0xFE)
+        {
+          rep |= (*(seq++) << 8);
+          seqSize--;
+        }
+        npix += rep;
+        if(npix < next)
+          continue;
+        if(!foundnext)
+        {
+          rep = npix - next;
+          drawLim += rep;
+          WritePixels(clut[colIndx], rep, GPIOC_BASE);
+          foundnext = true;
+          npix = next + rep;
+          continue;
+        }
+        if(npix > last)
+        {
+          remrep = rep;
+          npix -= rep;
+          rep = last - npix;
+          drawLim += rep;
+          WritePixels(clut[colIndx], rep, GPIOC_BASE);
+          npix += rep;
+          remrep -= rep;
+          remrep -= db->nSkip;
+          break;
+        }
+        drawLim += rep;
+        WritePixels(clut[colIndx], rep, GPIOC_BASE);
+      }
+      if(drawLim > 0)break;
+      if(npix >= last)break;
+    }/* while (seqSize) */
+    next += db->nDraw + db->nSkip;
+    last = next + db->nDraw;
+    foundnext = false;
+    if(drawLim > 0)break;
+  }/* while(npix < lastlast) */
+
 }
