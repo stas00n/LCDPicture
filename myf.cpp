@@ -136,61 +136,55 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
   MYFHEAD_T* head = (MYFHEAD_T*)myf;
   uint16_t* clut = (uint16_t*)(myf + head->clutOffset);
   uint8_t* seq = myf + head->sequenceOffset;
-  uint32_t seqSize = head->sequenceSize;
+  //uint32_t seqSize = head->sequenceSize;
   
     
   
-  uint32_t first = db->firstPixIndx;
+  //uint32_t first = db->firstPixIndx;
   uint32_t last = db->lastPixIndx;
   uint32_t npix = 0;
+  uint32_t start = db->firstPixIndx;
+  uint32_t end;
   
   lcd.WriteCom(0x2C);
   
-  uint8_t colIndx, tmp;
+  register uint8_t tmp;
+  uint8_t colIndx;
+  int32_t remrep = 0;
   uint16_t rep;
-  bool foundfirst = false;
   
-  while(seqSize--)
+  bool foundstart = false;
+  
+  while(npix < last)
   {
     tmp = *seq++;
-    if(tmp < 0xFE)
+    if(tmp >= 0xFE)
     {
-      colIndx = tmp;
-      if(npix++ < first)
+      rep = *seq++;
+      if(tmp == 0xFE)
+        rep |= ((*seq++) << 8);
+      if(npix + rep > last)
+        rep = last - npix;
+      npix += rep;
+      if(npix < start)
         continue;
-      foundfirst = true;
-      if(npix > last)
-         break;
-      WritePixels(clut[tmp], 1, GPIOC_BASE);
+      if(npix > start && !foundstart)
+      {
+        rep = npix - start;
+      }
+      WritePixels(clut[colIndx], rep, GPIOC_BASE);
+      foundstart = true;
+      //continue;
     }
     else
     {
-      rep = *(seq++);
-      seqSize--;
-      if(tmp == 0xFE)
-      {
-        rep |= (*(seq++) << 8);
-        seqSize--;
-      }
-      npix += rep;
-      if(npix < first)
+      colIndx = tmp;
+      if(++npix < start)
         continue;
-      if(!foundfirst)
-      {
-        rep = npix - first;
-        WritePixels(clut[colIndx], rep, GPIOC_BASE);
-        foundfirst = true;
-        npix = first;
-        continue;
-      }
-      if(npix > last)
-      {
-        npix -= rep;
-        rep = last - npix;
-        WritePixels(clut[colIndx], rep, GPIOC_BASE);
-        break;
-      }
-      WritePixels(clut[colIndx], rep, GPIOC_BASE);
+      WritePixels(clut[colIndx], 1, GPIOC_BASE);
+      
     }
+
   }
+
 }
