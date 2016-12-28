@@ -2151,6 +2151,9 @@
   <group>
     <name>Pictures</name>
     <file>
+      <name>$PROJ_DIR$\Pictures\htest100.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Pictures\test1.c</name>
     </file>
     <file>

@@ -144,14 +144,14 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
   uint32_t last = db->lastPixIndx;
   uint32_t npix = 0;
   uint32_t start = db->firstPixIndx;
-  uint32_t end;
-  
+  uint32_t end = start + db->nDraw - 1;
+  uint32_t wrote = 0;// debug
   lcd.WriteCom(0x2C);
   
   register uint8_t tmp;
   uint8_t colIndx;
-  int32_t remrep = 0;
-  uint16_t rep;
+  //int32_t remrep = 0;
+  int32_t rep;
   
   bool foundstart = false;
   
@@ -160,19 +160,46 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
     tmp = *seq++;
     if(tmp >= 0xFE)
     {
+      // Read repeats
       rep = *seq++;
       if(tmp == 0xFE)
         rep |= ((*seq++) << 8);
-      if(npix + rep > last)
-        rep = last - npix;
-      npix += rep;
-      if(npix < start)
+      //
+      if((npix += rep) < start)
         continue;
-      if(npix > start && !foundstart)
+      if(npix > end)
+      {
+        if(npix > start + head->imgWidth)
+        {
+        int h = (npix - start)/ head->imgWidth;
+        rep = npix - start - h * db->nSkip;
+        if(foundstart) rep--;
+       // h += 1;
+        h *= head->imgWidth;
+        start += h;
+        end = start + db->nDraw;;
+        }
+        else
+        {
+          rep = end - rep + npix;
+        }
+        WritePixels(clut[colIndx], rep, GPIOC_BASE);
+        wrote += rep;
+        if(npix >= start)
+                foundstart = true;
+        else foundstart = false;
+        continue;
+        //if (rep < 0)
+        //  rep = 0;
+      }
+      
+      if(npix >= start && !foundstart)
       {
         rep = npix - start;
       }
+      
       WritePixels(clut[colIndx], rep, GPIOC_BASE);
+      wrote += rep;
       foundstart = true;
       //continue;
     }
@@ -181,8 +208,16 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
       colIndx = tmp;
       if(++npix < start)
         continue;
-      WritePixels(clut[colIndx], 1, GPIOC_BASE);
-      
+      WritePixels(clut[tmp], 1, GPIOC_BASE);
+      wrote += 1;
+      foundstart = true;
+    }
+    
+    if(npix >= end)
+    {
+      start+= db->nDraw + db->nSkip;
+      end = start + db->nDraw;
+      foundstart = false;
     }
 
   }
