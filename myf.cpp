@@ -136,90 +136,77 @@ void CMYF::DrawPart(uint8_t* myf, DRAWBOUNDS_T* db)
   MYFHEAD_T* head = (MYFHEAD_T*)myf;
   uint16_t* clut = (uint16_t*)(myf + head->clutOffset);
   uint8_t* seq = myf + head->sequenceOffset;
-  //uint32_t seqSize = head->sequenceSize;
-  
-    
-  
-  //uint32_t first = db->firstPixIndx;
-  uint32_t last = db->lastPixIndx;
-  uint32_t npix = 0;
-  uint32_t start = db->firstPixIndx;
-  uint32_t end = start + db->nDraw - 1;
+
+  int32_t last = db->lastPixIndx;
+  int32_t npix = 0;
+  int32_t start = db->firstPixIndx;
+  int32_t end = start + db->nDraw - 1;
   uint32_t wrote = 0;// debug
   lcd.WriteCom(0x2C);
   
   register uint8_t tmp;
   uint8_t colIndx;
-  //int32_t remrep = 0;
   int32_t rep;
+  int32_t remrep = 0;
   
-  bool foundstart = false;
+  //bool foundstart = false;
   
   while(npix < last)
   {
-    tmp = *seq++;
-    if(tmp >= 0xFE)
+    if(npix > end)
     {
-      // Read repeats
-      rep = *seq++;
-      if(tmp == 0xFE)
-        rep |= ((*seq++) << 8);
-      //
-      if((npix += rep) < start)
-        continue;
-      if(npix > end)
+      start += head->imgWidth;
+      end += head->imgWidth;
+    }
+    // process remaining repeats
+    if(remrep > 0)
+    {
+      if(npix < start || npix > end)//Don't draw
       {
-        if(npix > start + head->imgWidth)
-        {
-        int h = (npix - start)/ head->imgWidth;
-        rep = npix - start - h * db->nSkip;
-        if(foundstart) rep--;
-       // h += 1;
-        h *= head->imgWidth;
-        start += h;
-        end = start + db->nDraw;;
-        }
-        else
-        {
-          rep = end - rep + npix;
-        }
+        npix++;
+        remrep--;
+        continue; 
+      }
+      if(npix + remrep > end)//Draw to end
+      {
+        rep = end - npix + 1;
         WritePixels(clut[colIndx], rep, GPIOC_BASE);
         wrote += rep;
-        if(npix >= start)
-                foundstart = true;
-        else foundstart = false;
+        npix += rep;
+        remrep -= rep;
         continue;
-        //if (rep < 0)
-        //  rep = 0;
       }
-      
-      if(npix >= start && !foundstart)
-      {
-        rep = npix - start;
-      }
-      
-      WritePixels(clut[colIndx], rep, GPIOC_BASE);
-      wrote += rep;
-      foundstart = true;
-      //continue;
+      WritePixels(clut[colIndx], remrep, GPIOC_BASE);// Draw on visible area
+      wrote += remrep;
+      npix += remrep;
+      remrep = 0;
+      continue;
     }
+    //***********************************************************
+    //read data    
+    tmp = *seq++;
+    
+    if(tmp >= 0xFE)
+    {
+      remrep = *seq++; // Read repeats
+      if(tmp == 0xFE)
+        remrep |= ((*seq++) << 8);
+      
+      continue;
+    }
+    
+    // single pixel write
     else
     {
       colIndx = tmp;
-      if(++npix < start)
+      if(npix < start || npix > end)
+      {
+        npix++;
         continue;
+      }
       WritePixels(clut[tmp], 1, GPIOC_BASE);
       wrote += 1;
-      foundstart = true;
+      npix++;
     }
-    
-    if(npix >= end)
-    {
-      start+= db->nDraw + db->nSkip;
-      end = start + db->nDraw;
-      foundstart = false;
-    }
-
   }
-
 }
